@@ -18,7 +18,7 @@ export const CalendarPage = () => {
 
   const eventStyleGetter = (event) => {
     // console.log(event, event.user._id, user.uid);
-    const isMyEvent = user.uid === event.user._id || user.uid === event.user.uid;
+    const isMyEvent = user.uid === event.user._id;
 
     const style = {
       backgroundColor: isMyEvent ? "#347CF7" : "#465666",
@@ -39,12 +39,12 @@ export const CalendarPage = () => {
   };
 
   const onSelect = (event) => {
-    console.log("onSelect", event);
+    // console.log("onSelect", event);
     setActiveEvent(event);
   };
 
   const onViewChanged = (event) => {
-    console.log("onViewChanged", event);
+    // console.log("onViewChanged", event);
     localStorage.setItem("lastView", event);
     setLastView(event);
   };

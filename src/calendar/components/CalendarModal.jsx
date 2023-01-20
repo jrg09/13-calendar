@@ -24,9 +24,18 @@ export const CalendarModal = () => {
     end: addHours(new Date(), 2),
   });
 
-  const isMyEvent = activeEvent
-    ? user.uid === activeEvent.user._id || user.uid === activeEvent.user.uid || !activeEvent.id
-    : false;
+  console.log("activeEvent", activeEvent ? true : false);
+  console.log("activeEvent.id?", activeEvent && activeEvent.id ? true : false);
+
+  const isMyEvent = useMemo(
+    () => (activeEvent ? user.uid === activeEvent.user?._id || !activeEvent.id || !activeEvent.user : false),
+    [activeEvent]
+  );
+
+  const modalTitle = useMemo(
+    () => (activeEvent && activeEvent.id ? "Actualizar evento" : "Nuevo evento"),
+    [activeEvent]
+  );
 
   const customStyles = {
     content: {
@@ -42,7 +51,7 @@ export const CalendarModal = () => {
   Modal.setAppElement("#root");
 
   const onCloseModal = () => {
-    console.log("cerrando modal");
+    // console.log("cerrando modal");
     closeDateModal();
   };
 
@@ -52,6 +61,15 @@ export const CalendarModal = () => {
 
   const onDateChange = (event, type) => {
     setFormValues({ ...formValues, [type]: event });
+
+    //
+    if (type === "start") {
+      const diffSeconds = differenceInSeconds(formValues.end, formValues.start);
+
+      if (diffSeconds <= 0 || isNaN(diffSeconds)) {
+        onDateChange(addHours(formValues.start, 2), "end");
+      }
+    }
   };
 
   const titleClass = useMemo(() => {
@@ -72,17 +90,17 @@ export const CalendarModal = () => {
     const diffSeconds = differenceInSeconds(formValues.end, formValues.start);
 
     if (diffSeconds <= 0 || isNaN(diffSeconds)) {
-      console.log("Fechas inválidas");
+      // console.log("Fechas inválidas");
       Swal.fire("Fechas incorrectas", "Revisa fecha de inicio y fin del evento", "error");
       return;
     }
 
     if (formValues.title.trim().length == 0) {
-      console.log("Título del evento requerido");
+      // console.log("Título del evento requerido");
       return;
     }
 
-    console.log(formValues);
+    // console.log(formValues);
 
     await startSavingEvent(formValues);
 
@@ -100,7 +118,7 @@ export const CalendarModal = () => {
         className="modal"
         overlayClassName="modal-fondo"
         closeTimeoutMS={100}>
-        <h1> Nuevo evento </h1>
+        <h1>{modalTitle}</h1>
         <hr />
         <form className="container" onSubmit={onSubmit}>
           <div className="form-group mb-2">
@@ -132,7 +150,7 @@ export const CalendarModal = () => {
 
           <hr />
           <div className="form-group mb-2">
-            <label>Titulo y notas</label>
+            <label>Título del evento</label>
             <input
               type="text"
               className={`form-control ${titleClass}`}
@@ -142,9 +160,6 @@ export const CalendarModal = () => {
               value={formValues.title}
               onChange={onInputChange}
             />
-            <small id="emailHelp" className="form-text text-muted">
-              Una descripción corta
-            </small>
           </div>
 
           <div className="form-group mb-2">
@@ -156,9 +171,6 @@ export const CalendarModal = () => {
               name="notes"
               value={formValues.notes}
               onChange={onInputChange}></textarea>
-            <small id="emailHelp" className="form-text text-muted">
-              Información adicional
-            </small>
           </div>
 
           <button

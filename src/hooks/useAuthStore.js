@@ -7,7 +7,7 @@ export const useAuthStore = () => {
   const dispatch = useDispatch();
 
   const startLogin = async (email, password) => {
-    console.log("startLogin", { email, password });
+    // console.log("startLogin", { email, password });
 
     dispatch(onChecking());
 
@@ -69,7 +69,7 @@ export const useAuthStore = () => {
 
       setTokenAndLogin(data.name, data.uid, data.token);
     } catch (error) {
-      console.error("error", error);
+      // console.error("error", error);
       localStorage.clear();
       return dispatch(onLogout("Sesión expirada."));
     }

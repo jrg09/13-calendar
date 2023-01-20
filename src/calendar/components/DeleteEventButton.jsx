@@ -1,13 +1,16 @@
 import { useAuthStore } from "../../hooks";
 import { useCalendarStore } from "../../hooks/useCalendarStore";
 import { useUIStore } from "../../hooks/useUIStore";
-import { onDeleteEvent } from "../../store";
 
 export const DeleteEventButton = () => {
   const { user } = useAuthStore();
   const { startDeleteEvent, hasEventSelected, activeEvent } = useCalendarStore();
+  const { isDateModalOpen } = useUIStore();
 
-  const isMyEvent = activeEvent ? user.uid === activeEvent.user._id || user.uid === activeEvent.user.uid : false;
+  const isMyEvent =
+    activeEvent && !isDateModalOpen
+      ? user.uid === activeEvent.user?._id || !activeEvent.id || !activeEvent.user
+      : false;
 
   const handleClickDelete = () => {
     startDeleteEvent();

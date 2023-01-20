@@ -13,11 +13,6 @@ export const AddEventButton = () => {
       notes: "",
       start: addHours(new Date(), 1),
       end: addHours(new Date(), 2),
-      bgColor: "#6a6b6c",
-      user: {
-        id: "abc",
-        name: "Jorge",
-      },
     });
   };
 
