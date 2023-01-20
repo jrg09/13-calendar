@@ -7,10 +7,16 @@ export const DeleteEventButton = () => {
   const { startDeleteEvent, hasEventSelected, activeEvent } = useCalendarStore();
   const { isDateModalOpen } = useUIStore();
 
-  const isMyEvent =
-    activeEvent && !isDateModalOpen
-      ? user.uid === activeEvent.user?._id || !activeEvent.id || !activeEvent.user
-      : false;
+  let showButton = false;
+
+  showButton = hasEventSelected;
+
+  showButton =
+    showButton &&
+    activeEvent &&
+    activeEvent.id &&
+    activeEvent.user &&
+    (activeEvent.user.uid === user.uid || activeEvent.user._id === user.uid);
 
   const handleClickDelete = () => {
     startDeleteEvent();
@@ -20,7 +26,7 @@ export const DeleteEventButton = () => {
     <button
       className="btn btn-danger fab-danger"
       onClick={handleClickDelete}
-      style={{ display: isMyEvent && hasEventSelected ? "" : "none" }}>
+      style={{ display: showButton ? "" : "none" }}>
       <i className="fas fa-trash-alt"></i>
     </button>
   );

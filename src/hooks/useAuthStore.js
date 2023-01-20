@@ -13,7 +13,7 @@ export const useAuthStore = () => {
 
     try {
       const { data } = await calendarApi.post("/auth", { email, password });
-      console.log(data);
+      // console.log(data);
 
       //login correcto
       setTokenAndLogin(data.name, data.uid, data.token);
@@ -29,13 +29,13 @@ export const useAuthStore = () => {
   };
 
   const startRegister = async (name, email, password) => {
-    console.log("startRegister", { name, email, password });
+    // console.log("startRegister", { name, email, password });
 
     dispatch(onChecking());
 
     try {
       const { data } = await calendarApi.post("/auth/new", { name, email, password });
-      console.log(data);
+      // console.log(data);
 
       //registro correcto
       setTokenAndLogin(data.name, data.uid, data.token);

@@ -10,6 +10,7 @@ calendarApi.interceptors.request.use((config) => {
   config.headers = {
     ...config.headers,
     "x-token": localStorage.getItem("token"),
+    "Access-Control-Allow-Origin": "*",
   };
   return config;
 });

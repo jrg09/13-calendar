@@ -24,8 +24,8 @@ export const CalendarModal = () => {
     end: addHours(new Date(), 2),
   });
 
-  console.log("activeEvent", activeEvent ? true : false);
-  console.log("activeEvent.id?", activeEvent && activeEvent.id ? true : false);
+  // console.log("activeEvent", activeEvent ? true : false);
+  // console.log("activeEvent.id?", activeEvent && activeEvent.id ? true : false);
 
   const isMyEvent = useMemo(
     () => (activeEvent ? user.uid === activeEvent.user?._id || !activeEvent.id || !activeEvent.user : false),
@@ -36,6 +36,11 @@ export const CalendarModal = () => {
     () => (activeEvent && activeEvent.id ? "Actualizar evento" : "Nuevo evento"),
     [activeEvent]
   );
+
+  const titleClass = useMemo(() => {
+    if (!formSubmitted) return "";
+    return formValues.title.trim().length > 0 ? "" : "is-invalid";
+  }, [formValues.title, formSubmitted]);
 
   const customStyles = {
     content: {
@@ -50,9 +55,16 @@ export const CalendarModal = () => {
 
   Modal.setAppElement("#root");
 
+  useEffect(() => {
+    if (activeEvent !== null) {
+      setFormValues({ ...activeEvent });
+    }
+  }, [activeEvent]);
+
   const onCloseModal = () => {
     // console.log("cerrando modal");
     closeDateModal();
+    setFormSubmitted(false);
   };
 
   const onInputChange = ({ target }) => {
@@ -71,17 +83,6 @@ export const CalendarModal = () => {
       }
     }
   };
-
-  const titleClass = useMemo(() => {
-    if (!formSubmitted) return "";
-    return formValues.title.trim().length > 0 ? "" : "is-invalid";
-  }, [formValues.title, formSubmitted]);
-
-  useEffect(() => {
-    if (activeEvent !== null) {
-      setFormValues({ ...activeEvent });
-    }
-  }, [activeEvent]);
 
   const onSubmit = async (event) => {
     event.preventDefault();
@@ -172,6 +173,14 @@ export const CalendarModal = () => {
               value={formValues.notes}
               onChange={onInputChange}></textarea>
           </div>
+
+          {activeEvent && activeEvent.user && (
+            <div className="form-group mb-2">
+              <small className="form-text text-muted">
+                <strong>Creado por:</strong> {activeEvent.user.name}
+              </small>
+            </div>
+          )}
 
           <button
             type="submit"

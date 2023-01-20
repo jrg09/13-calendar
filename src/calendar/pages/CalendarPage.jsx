@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Calendar } from "react-big-calendar";
 import { CalendarEvent, CalendarModal, Navbar, AddEventButton, DeleteEventButton } from "../";
 import { localizer } from "../../helpers/calendarLocalizer";
 import { useAuthStore, useCalendarStore, useUIStore } from "../../hooks";
-import { convertEventsToCalendarEvents, getMessagesES } from "../../helpers";
+import { getMessagesES } from "../../helpers";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import { addHours } from "date-fns";
 
 export const CalendarPage = () => {
   const [lastView, setLastView] = useState(localStorage.getItem("lastView") || "week");
@@ -18,7 +19,8 @@ export const CalendarPage = () => {
 
   const eventStyleGetter = (event) => {
     // console.log(event, event.user._id, user.uid);
-    const isMyEvent = user.uid === event.user._id;
+
+    const isMyEvent = user.uid === event.user?._id || user.uid === event.user?.uid;
 
     const style = {
       backgroundColor: isMyEvent ? "#347CF7" : "#465666",
@@ -43,6 +45,22 @@ export const CalendarPage = () => {
     setActiveEvent(event);
   };
 
+  const handleSelectSlot = ({ start, end }) => {
+    console.log("handleSelectSlot", start, end);
+
+    const iniDate = new Date(start).getHours() === 0 ? addHours(start, new Date().getHours() + 1) : start;
+    const endDate = new Date(end).getHours() === 0 ? addHours(start, new Date().getHours() + 2) : end;
+
+    openDateModal();
+    setActiveEvent({
+      title: "",
+      notes: "",
+      start: iniDate,
+      end: endDate,
+      user,
+    });
+  };
+
   const onViewChanged = (event) => {
     // console.log("onViewChanged", event);
     localStorage.setItem("lastView", event);
@@ -65,6 +83,8 @@ export const CalendarPage = () => {
         components={{ event: CalendarEvent }}
         onDoubleClickEvent={onDoubleClick}
         onSelectEvent={onSelect}
+        selectable
+        onSelectSlot={handleSelectSlot}
         onView={onViewChanged}
       />
       <CalendarModal />

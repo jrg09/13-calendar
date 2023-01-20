@@ -24,7 +24,7 @@ export const useCalendarStore = () => {
   };
 
   const startSavingEvent = async (calendarEvent) => {
-    console.log("startSavingEvent", calendarEvent);
+    // console.log("startSavingEvent", calendarEvent);
 
     try {
       //actualizar evento
@@ -39,7 +39,7 @@ export const useCalendarStore = () => {
       dispatch(onAddNewEvent({ ...calendarEvent, id: data.evento.id }));
     } catch (error) {
       console.error("error", error); //axios error
-      Swal.fire("Error al guardar", error.response.data?.msg, "error");
+      Swal.fire("Error al guardar", error.response?.data?.msg, "error");
     }
   };
 
