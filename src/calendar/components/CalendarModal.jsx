@@ -24,7 +24,9 @@ export const CalendarModal = () => {
     end: addHours(new Date(), 2),
   });
 
-  const isMyEvent = activeEvent ? user.uid === activeEvent.user._id || user.uid === activeEvent.user.uid : false;
+  const isMyEvent = activeEvent
+    ? user.uid === activeEvent.user._id || user.uid === activeEvent.user.uid || !activeEvent.id
+    : false;
 
   const customStyles = {
     content: {
