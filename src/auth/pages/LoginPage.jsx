@@ -31,13 +31,13 @@ export const LoginPage = () => {
 
   const onLoginSubmit = (event) => {
     event.preventDefault();
-    console.log({ loginEmail, loginPassword });
+    // console.log({ loginEmail, loginPassword });
     startLogin(loginEmail, loginPassword);
   };
 
   const onRegisterSubmit = (event) => {
     event.preventDefault();
-    console.log({ registerEmail, registerPassword, registerPassword2, registerName });
+    // console.log({ registerEmail, registerPassword, registerPassword2, registerName });
 
     if (registerPassword !== registerPassword2) {
       Swal.fire("Registro de usuario", "Las contraseñas no son iguales", "warning");
