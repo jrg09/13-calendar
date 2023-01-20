@@ -46,7 +46,7 @@ export const CalendarPage = () => {
   };
 
   const handleSelectSlot = ({ start, end }) => {
-    console.log("handleSelectSlot", start, end);
+    // console.log("handleSelectSlot", start, end);
 
     const iniDate = new Date(start).getHours() === 0 ? addHours(start, new Date().getHours() + 1) : start;
     const endDate = new Date(end).getHours() === 0 ? addHours(start, new Date().getHours() + 2) : end;

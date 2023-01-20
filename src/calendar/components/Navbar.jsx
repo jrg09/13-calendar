@@ -4,7 +4,7 @@ export const Navbar = () => {
   const { user, startLogout } = useAuthStore();
 
   const handleLogout = () => {
-    console.log("handleLogout");
+    // console.log("handleLogout");
     startLogout();
   };
   return (
