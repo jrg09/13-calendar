@@ -7,13 +7,14 @@ import "./modal.css";
 import "react-datepicker/dist/react-datepicker.css";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import { useCalendarStore, useUIStore } from "../../hooks";
+import { useAuthStore, useCalendarStore, useUIStore } from "../../hooks";
 
 export const CalendarModal = () => {
   registerLocale("es", es);
 
   const { isDateModalOpen, closeDateModal } = useUIStore();
   const { activeEvent, startSavingEvent } = useCalendarStore();
+  const { user } = useAuthStore();
 
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formValues, setFormValues] = useState({
@@ -22,6 +23,8 @@ export const CalendarModal = () => {
     start: addHours(new Date(), 1),
     end: addHours(new Date(), 2),
   });
+
+  const isMyEvent = activeEvent ? user.uid === activeEvent.user._id || user.uid === activeEvent.user.uid : false;
 
   const customStyles = {
     content: {
@@ -156,7 +159,10 @@ export const CalendarModal = () => {
             </small>
           </div>
 
-          <button type="submit" className="btn btn-outline-primary btn-block">
+          <button
+            type="submit"
+            className="btn btn-outline-primary btn-block"
+            style={{ display: isMyEvent ? "" : "none" }}>
             <i className="far fa-save"></i>
             <span> Guardar</span>
           </button>

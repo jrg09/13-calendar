@@ -1,18 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Calendar } from "react-big-calendar";
 import { CalendarEvent, CalendarModal, Navbar, AddEventButton, DeleteEventButton } from "../";
 import { localizer } from "../../helpers/calendarLocalizer";
-import { getMessagesES } from "../../helpers";
-import { useCalendarStore, useUIStore } from "../../hooks";
+import { useAuthStore, useCalendarStore, useUIStore } from "../../hooks";
+import { convertEventsToCalendarEvents, getMessagesES } from "../../helpers";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 export const CalendarPage = () => {
   const [lastView, setLastView] = useState(localStorage.getItem("lastView") || "week");
   const { openDateModal } = useUIStore();
-  const { events, setActiveEvent } = useCalendarStore();
+  const { events, setActiveEvent, startLoadEvents } = useCalendarStore();
+  const { user } = useAuthStore();
 
-  const eventStyleGetter = (event, start, end, isSelected) => {
-    // console.log({ event, start, end, isSelected });
+  useEffect(() => {
+    startLoadEvents();
+  }, []);
+
+  const eventStyleGetter = (event) => {
+    // console.log(event, event.user._id, user.uid);
+    const isMyEvent = user.uid === event.user._id || user.uid === event.user.uid;
+
+    const style = {
+      backgroundColor: isMyEvent ? "#347CF7" : "#465666",
+      borderRadius: "0px",
+      opacity: "0.8",
+      color: "white",
+      fontSize: "8pt",
+    };
+
+    return {
+      style,
+    };
   };
 
   const onDoubleClick = (event) => {
@@ -28,7 +46,7 @@ export const CalendarPage = () => {
   const onViewChanged = (event) => {
     console.log("onViewChanged", event);
     localStorage.setItem("lastView", event);
-    // setLastView(event);
+    setLastView(event);
   };
 
   return (
