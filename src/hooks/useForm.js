@@ -16,6 +16,7 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
     for (const formValue of Object.keys(formValidation)) {
       if (formValidation[formValue] !== null) return false;
     }
+
     return true;
   }, [formValidation]);
 
@@ -33,10 +34,13 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
 
   const createValidators = () => {
     const formCheckedValues = {};
+
     for (const formField of Object.keys(formValidations)) {
       const [fn, errorMessage] = formValidations[formField];
+
       formCheckedValues[`${formField}Valid`] = fn(formState[formField]) ? null : errorMessage;
     }
+
     setFormValidation(formCheckedValues);
   };
 
@@ -45,6 +49,7 @@ export const useForm = (initialForm = {}, formValidations = {}) => {
     formState,
     onInputChange,
     onResetForm,
+
     ...formValidation,
     isFormValid,
   };

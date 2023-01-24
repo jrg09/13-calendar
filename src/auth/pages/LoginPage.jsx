@@ -1,55 +1,50 @@
-import React, { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import Swal from "sweetalert2";
 import { useAuthStore, useForm } from "../../hooks";
-import { LoadingSpinner } from "../../ui/components/loadingSpinner";
-import "./login.css";
+import "./LoginPage.css";
 
-const loginFields = {
+const loginFormFields = {
   loginEmail: "",
   loginPassword: "",
 };
-const registerFields = {
+
+const registerFormFields = {
+  registerName: "",
   registerEmail: "",
   registerPassword: "",
   registerPassword2: "",
-  registerName: "",
 };
 
 export const LoginPage = () => {
-  const { loginEmail, loginPassword, onInputChange: onLoginInputChange } = useForm(loginFields);
+  const { startLogin, errorMessage, startRegister } = useAuthStore();
+
+  const { loginEmail, loginPassword, onInputChange: onLoginInputChange } = useForm(loginFormFields);
   const {
     registerEmail,
+    registerName,
     registerPassword,
     registerPassword2,
-    registerName,
     onInputChange: onRegisterInputChange,
-  } = useForm(registerFields);
+  } = useForm(registerFormFields);
 
-  const { status, errorMessage, startLogin, startRegister } = useAuthStore();
-
-  const isChecking = useMemo(() => status === "checking", [status]);
-
-  const onLoginSubmit = (event) => {
+  const loginSubmit = (event) => {
     event.preventDefault();
-    // console.log({ loginEmail, loginPassword });
-    startLogin(loginEmail, loginPassword);
+    startLogin({ email: loginEmail, password: loginPassword });
   };
 
-  const onRegisterSubmit = (event) => {
+  const registerSubmit = (event) => {
     event.preventDefault();
-    // console.log({ registerEmail, registerPassword, registerPassword2, registerName });
-
     if (registerPassword !== registerPassword2) {
-      Swal.fire("Registro de usuario", "Las contraseñas no son iguales", "warning");
+      Swal.fire("Error en registro", "Contraseñas no son iguales", "error");
       return;
     }
 
-    startRegister(registerName, registerEmail, registerPassword);
+    startRegister({ name: registerName, email: registerEmail, password: registerPassword });
   };
 
   useEffect(() => {
     if (errorMessage !== undefined) {
-      Swal.fire("Ocurrió un problema", errorMessage, "error");
+      Swal.fire("Error en la autenticación", errorMessage, "error");
     }
   }, [errorMessage]);
 
@@ -58,10 +53,10 @@ export const LoginPage = () => {
       <div className="row">
         <div className="col-md-6 login-form-1">
           <h3>Ingreso</h3>
-          <form onSubmit={onLoginSubmit}>
+          <form onSubmit={loginSubmit}>
             <div className="form-group mb-2">
               <input
-                type="email"
+                type="text"
                 className="form-control"
                 placeholder="Correo"
                 name="loginEmail"
@@ -72,7 +67,6 @@ export const LoginPage = () => {
             <div className="form-group mb-2">
               <input
                 type="password"
-                autoComplete="off"
                 className="form-control"
                 placeholder="Contraseña"
                 name="loginPassword"
@@ -80,18 +74,15 @@ export const LoginPage = () => {
                 onChange={onLoginInputChange}
               />
             </div>
-            <div className="form-group mb-2">
-              <button type="submit" className="btnSubmit spinner-container" disabled={isChecking}>
-                Login
-                {isChecking ? <LoadingSpinner /> : <></>}
-              </button>
+            <div className="d-grid gap-2">
+              <input type="submit" className="btnSubmit" value="Login" />
             </div>
           </form>
         </div>
 
         <div className="col-md-6 login-form-2">
           <h3>Registro</h3>
-          <form onSubmit={onRegisterSubmit}>
+          <form onSubmit={registerSubmit}>
             <div className="form-group mb-2">
               <input
                 type="text"
@@ -115,7 +106,6 @@ export const LoginPage = () => {
             <div className="form-group mb-2">
               <input
                 type="password"
-                autoComplete="off"
                 className="form-control"
                 placeholder="Contraseña"
                 name="registerPassword"
@@ -127,7 +117,6 @@ export const LoginPage = () => {
             <div className="form-group mb-2">
               <input
                 type="password"
-                autoComplete="off"
                 className="form-control"
                 placeholder="Repita la contraseña"
                 name="registerPassword2"
@@ -136,11 +125,8 @@ export const LoginPage = () => {
               />
             </div>
 
-            <div className="form-group mb-2">
-              <button type="submit" className="btnSubmit spinner-container" disabled={isChecking}>
-                Crear cuenta
-                {isChecking ? <LoadingSpinner /> : <></>}
-              </button>
+            <div className="d-grid gap-2">
+              <input type="submit" className="btnSubmit" value="Crear cuenta" />
             </div>
           </form>
         </div>

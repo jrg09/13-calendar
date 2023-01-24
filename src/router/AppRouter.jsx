@@ -8,7 +8,7 @@ import { LoadingSpinner } from "../ui/components/loadingSpinner";
 export const AppRouter = () => {
   const { status, checkAuthToken } = useAuthStore();
 
-  //const authStatus = "not-authenticated";
+  // const authStatus = "not-authenticated";
 
   useEffect(() => {
     checkAuthToken();

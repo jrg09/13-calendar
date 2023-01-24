@@ -1,22 +1,18 @@
-import { useAuthStore } from "../../hooks";
+// import { useAuthStore } from "../../hooks";
 import { useCalendarStore } from "../../hooks/useCalendarStore";
-import { useUIStore } from "../../hooks/useUIStore";
 
 export const DeleteEventButton = () => {
-  const { user } = useAuthStore();
+  //const { user } = useAuthStore();
   const { startDeleteEvent, hasEventSelected, activeEvent } = useCalendarStore();
-  const { isDateModalOpen } = useUIStore();
 
   let showButton = false;
 
   showButton = hasEventSelected;
 
-  showButton =
-    showButton &&
-    activeEvent &&
-    activeEvent.id &&
-    activeEvent.user &&
-    (activeEvent.user.uid === user.uid || activeEvent.user._id === user.uid);
+  //que haya un evento seleccionado y que el usuario del evento sea el usuario que ha iniciado sesión
+  //prettier-ignore
+  // showButton = showButton && activeEvent && activeEvent.id && activeEvent.user
+  //   && (activeEvent.user.uid === user.uid || activeEvent.user._id === user.uid);
 
   const handleClickDelete = () => {
     startDeleteEvent();
@@ -24,6 +20,7 @@ export const DeleteEventButton = () => {
 
   return (
     <button
+      aria-label="btn-delete"
       className="btn btn-danger fab-danger"
       onClick={handleClickDelete}
       style={{ display: showButton ? "" : "none" }}>

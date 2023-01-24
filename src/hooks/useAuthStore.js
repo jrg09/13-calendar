@@ -18,7 +18,7 @@ export const useAuthStore = () => {
       //login correcto
       setTokenAndLogin(data.name, data.uid, data.token);
     } catch (error) {
-      console.log("error", error);
+      // console.log("error", error);
 
       dispatch(onLogout("Usuario/contraseña no válidos"));
 
@@ -35,16 +35,17 @@ export const useAuthStore = () => {
 
     try {
       const { data } = await calendarApi.post("/auth/new", { name, email, password });
+
       // console.log(data);
 
       //registro correcto
       setTokenAndLogin(data.name, data.uid, data.token);
     } catch (error) {
-      console.log("error", error);
+      // console.log("error", error);
 
-      let errorMsg = error.response.data?.msg || "Sin mensaje de error";
+      let errorMsg = error.response?.data?.msg || "Sin mensaje de error";
 
-      if (error.response.data.errors) {
+      if (error.response?.data?.errors) {
         errorMsg = "Hay errores de validación en el registro.";
       }
 
